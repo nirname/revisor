@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+
+# require 'highline/import'
+def yesno(prompt = 'Continue?', default = true)
+  a = ''
+  s = default ? '[Y/n]' : '[y/N]'
+  d = default ? 'y' : 'n'
+  until %w[y n].include? a
+    print "#{prompt} #{s} "
+    a = STDIN.gets.chomp.downcase
+    a = d if a.length == 0
+  end
+  a == 'y'
+end
+
+# require File.expand_path('../../config/environment', __FILE__)
+require 'active_support/core_ext/object/blank'
+require 'active_support/inflector'
+
+class ProjectName < String
+  attr_writer :module_name, :app_name, :repo_name, :deploy_path, :title, :sso_name
+
+  def initialize(value)
+    super(value.to_s.gsub('-', '_'))
+  end
+
+  def module_name
+    self.camelize
+  end
+
+  def app_name
+    self.underscore.gsub('_', '-')
+  end
+
+  def repo_name
+    self.underscore.gsub('_', '-')
+  end
+
+  def deploy_path
+    self.underscore.gsub('_', '-')
+  end
+
+  def title
+    self.titleize
+  end
+
+  def sso_name
+    self.underscore
+  end
+
+  def cookie_path
+    self.underscore
+  end
+
+  def database_name
+    self.underscore
+  end
+end
+
+project_name = ProjectName.new(ARGV[0])
+project_name_is_ok = false
+
+while !project_name_is_ok
+  while project_name.blank?
+    puts "\nУкажите имя проекта:"
+    project_name = ProjectName.new(STDIN.gets.chomp)
+  end
+
+  puts "\nВыбраны имена"
+  ProjectName.instance_methods(false).select{ |n| !n.to_s.include?('=') }.each do |method_name|
+    puts " > #{ method_name }: #{ project_name.send(method_name) }"
+  end
+
+  if yesno("Имена проекта правильные?", false)
+    project_name_is_ok = true
+  else
+    puts 'Ничего не изменилось'
+  end
+  # print 'Имена проекта правильные? (y/n): '
+end
+
+puts "\nСледующие файлы будут сгенерированы:"
+files = %x( find . -path ./app/views -prune -o -name '*.erb' -print )
+
+puts files
+
+require 'erb'
+
+files.split("\n").each do |file_name|
+  puts "#{ file_name } -> #{ file_name.sub('.erb', '') }"
+  result = ERB.new(File.read(file_name), ).result
+  File.open(file_name, 'w') { |file| file.write(result) }
+  File.rename(file_name, file_name.sub('.erb', ''))
+end

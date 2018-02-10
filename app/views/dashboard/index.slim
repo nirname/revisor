@@ -1,0 +1,31 @@
+/ h1 Приборная панель
+
+- x = 3
+
+- if @dashboard_reports.any?
+
+  - @dashboard_reports.in_groups_of(x, false).each do |group|
+    .row
+      - group.each do |report|
+        div class="col-md-#{12 / (x.to_i > 0 ? x : 1)}"
+          = render partial: 'base_reports/dashboard', locals: { report: report }
+
+- else
+
+  .row
+    div class="col-md-#{12 / x}"
+      .panel.panel-default
+        .panel-heading
+          h3 style="margin-top: 10px;"
+            | Анекдот
+        .panel-body
+          p
+            | Самолет падает, командир кричит механику:
+            br
+            | - Приборы?
+            br
+            | - 600!
+            br
+            | - Что 600?
+            br
+            | - А что приборы?

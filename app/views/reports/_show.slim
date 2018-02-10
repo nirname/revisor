@@ -1,0 +1,26 @@
+- if @report.data.present?
+  -# limit = (action_name == 'show') ? 100 : nil
+  - limit = 100 # сделаем 100, т.к. просматривать в редактировании большие отчеты тоже неудобно
+  .row
+    div class=(@report.plot.present? ? 'col-md-6' : 'col-md-12')
+      .panel.panel-default style="overflow-x: scroll;"
+        table.table.table-bordered
+          tr
+            - @report.headers.each_with_index do |header, index|
+              th
+                = "№#{index + 1}"
+                br
+                = header
+          - @report.rows(limit).each do |row|
+            tr
+              - row.each do |column|
+                td= column
+    - if @report.plot.present?
+      .col-md-6
+        .panel.panel-default
+          = link_to @report.image_path, target: '_blank'
+            = image_tag @report.image_path.to_s, class: 'img-responsive'
+
+- else
+  p Результатъ отсутствует
+

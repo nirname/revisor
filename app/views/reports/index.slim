@@ -1,0 +1,34 @@
+= link_to 'Добавить', new_report_path, class: 'btn btn-primary'
+br
+br
+- if @reports.any?
+  table.table.table-bordered
+    tr
+      th Название
+      th
+    - @reports.each do |report|
+      tr
+        td= link_to report.name, report
+        td
+          = link_to edit_report_path(report)
+            span.text-warning Изменить
+          '
+          = link_to copy_report_path(report)
+            span.text-success Копировать
+          '
+          = link_to result_report_path(report, format: 'zip')
+            span Выгрузить
+
+          - if false
+            .dropdown
+              a.dropdown-toggle href="dropdownMenu1" aria-expanded="true" aria-haspopup="true" data-toggle="dropdown" type="button"
+                | Скачать
+                span.caret
+              ul.dropdown-menu aria-labelledby="dropdownMenu1"
+                li
+                  = link_to 'json', download_report_path(report, format: 'json')
+                li
+                  = link_to 'zip', download_report_path(report, format: 'zip')
+
+- else
+  p Нет отчётов

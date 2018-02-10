@@ -1,0 +1,16 @@
+<%
+  require 'uri'
+  require 'yaml'
+  database_name = 'revisor'
+%>
+
+<% %w(development production test).each do |current_env| %>
+<% uri = URI.parse(ENV["#{ current_env.upcase }_#{ database_name.upcase }_DATABASE_URL"] || "postgres://localhost/#{ database_name }_#{ current_env }") %>
+<%= current_env %>:
+  <%= "adapter: #{uri.scheme == 'postgres' ? 'postgresql' : uri.scheme}" %>
+  <%= "database: #{uri.path.to_s.split('/')[1]}" %>
+  <%= "username: #{uri.user}" if uri.user %>
+  <%= "password: #{uri.password}" if uri.password %>
+  <%= "host: #{uri.host}" if uri.host && uri.host != "localhost" %>
+  <%= "port: #{uri.port}" if uri.port %>
+<% end %>

@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    title
+      = t('project.title')
+    = csrf_meta_tags
+    = javascript_include_tag 'application'
+    = stylesheet_link_tag    'application', media: 'all'
+  body
+    nav class="navbar navbar-default" role="navigation"
+      .container
+        .navbar-header
+          button.navbar-toggle.collapsed type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          span class="navbar-brand"= t('project.title')
+        .collapse.navbar-collapse#bs-example-navbar-collapse-1
+          ul.nav.navbar-nav
+            li class=('active' if controller_path == 'dashboard')
+              = link_to 'Приборная панель', dashboard_path
+            li class=('active' if controller_path == 'reports')
+              = link_to 'Отчеты', reports_path
+            li class=('active' if controller_path == 'home')
+              = link_to 'Уставъ', regulations_path
+  .container
+    - if alert
+      .alert.alert-danger
+        = Array.wrap(alert).join('<br>').html_safe
+        a href="#" class="close" data-dismiss="alert" aria-label="close" &times;
+    - if notice
+      .alert.alert-success
+        = Array.wrap(notice).join('<br>').html_safe
+        a href="#" class="close" data-dismiss="alert" aria-label="close" &times;
+    = yield

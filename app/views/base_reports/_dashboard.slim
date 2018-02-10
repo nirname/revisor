@@ -1,0 +1,33 @@
+.panel.panel-default.tab-content
+  .panel-heading
+    h3 style="margin-top: 10px;"
+      .row
+        .col-sm-10
+          = link_to base_report_path(report), class: 'black'
+            = report.title
+        .col-sm-2.text-right
+          = link_to make_base_report_path(report), class: 'black'
+            span.glyphicon.glyphicon-refresh
+  - if false
+    .panel-body
+      = render(partial: "#{report.code}/params", locals: { report: report }) rescue render(partial: "base_reports/params", locals: { report: report })
+
+  /nav-tabs nav-pills
+  - if report.shards.count > 1
+    ul.nav.nav-tabs role="tablist"
+      - report.results.each_with_index do |result, index|
+        li class=(index == 0 ? 'active' : nil)
+          a data-toggle="tab" href="##{report.code}-#{result.shard}" class=(index == 0 ? 'no-left-border' : nil)
+            = result.shard
+
+  - report.results.each_with_index do |result, index|
+    table.table.table-bordered.tab-pane style="margin-bottom: 0" id="#{report.code}-#{result.shard}" class=(index == 0 ? 'active' : nil)
+      thead
+        tr
+          - result.headers.each do |header|
+            th
+              = t(report.code + '.' + header)
+      - result.rows.each do |row|
+        tr
+          - row.each do |col|
+            td= col

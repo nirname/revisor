@@ -1,0 +1,2 @@
+wb ||= xlsx_package.workbook
+render partial: 'export', locals: { report: @report, wb: wb }

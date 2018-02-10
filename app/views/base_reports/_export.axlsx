@@ -1,0 +1,9 @@
+wb ||= xlsx_package.workbook
+report.results.each_with_index do |result, index|
+  wb.add_worksheet(name: result.shard) do |sheet|
+    sheet.add_row result.headers.map{ |header| t(report.code + '.' + header) }
+    result.rows.each do |row|
+      sheet.add_row row
+    end
+  end
+end

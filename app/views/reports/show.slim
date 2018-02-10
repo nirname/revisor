@@ -1,0 +1,44 @@
+h1= @report.name
+
+- if @report.data.present?
+  p
+    strong
+      | От
+      '
+      = l @report.updated_at
+      - if @report.plot.blank?
+        |; Без графика
+      - if @report.rows.count > 100
+        |; Показаны первые 100 строк, нажмите "Выгрузить" для полного отчета
+
+.btn-toolbar
+  .btn-group
+    = link_to make_report_path(@report), class: 'btn btn-primary'
+      - if @report.data.present?
+        | Обновить
+      - else
+        | Построить
+
+    = link_to 'В Excel', export_report_path(@report, format: 'xlsx'), class: 'btn btn-success'
+    = link_to 'На почту', email_report_path(@report), class: 'btn btn-warning'
+
+  .btn-group.pull-right
+    .dropdown
+      button#actions.btn.btn-default.dropdown-toggle aria-expanded="true" aria-haspopup="true" data-toggle="dropdown" type="button"
+        | Действия
+        | &nbsp
+        span.caret
+      ul.dropdown-menu aria-labelledby="actions"
+        li= link_to 'Изменить', edit_report_path(@report)
+        li= link_to 'Копировать', copy_report_path(@report)
+        li.divider role="separator"
+        li= link_to 'Архив (csv + image)', result_report_path(@report, format: 'zip')
+        li= link_to 'Исходник', source_report_path(@report, format: 'zip')
+        li.divider role="separator"
+        li
+          = link_to report_path(@report), method: :delete, data: { confirm: "Удалить отчет '#{@report.name}'?" }
+            span.text-danger Удалить
+
+br
+
+= render 'show'

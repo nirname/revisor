@@ -1,0 +1,42 @@
+= form_for @report do |f|
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+
+  .btn-toolbar
+    a.btn.btn-info aria-controls="help" aria-expanded="false" data-toggle="collapse" href="#help" role="button"
+      | Подсказки
+    = link_to 'Назадъ', @report, class: 'btn btn-default', data: { confirm: 'Все несохраненные изменения будут утеряны' }
+
+  br
+
+  #help.collapse
+    .row
+      .col-md-6
+        .well
+          | Обычный SQL
+          br
+          br
+          br
+      .col-md-6
+        .well
+          | GNU plot с переменными:
+          br
+          | name &mdash; имя отчета
+          br
+          | data &mdash; данные отчета
+
+  .row
+    .col-md-6
+      .form-group
+        = f.label :query
+        = f.text_area :query, class: 'form-control text-nowrap', rows: 20
+      .form-group
+        = f.submit 'Сохранить все', class: 'btn btn-default', name: 'update_query'
+    .col-md-6
+      .form-group
+        = f.label :plot
+        = f.text_area :plot, class: 'form-control text-nowrap', rows: 20
+      .form-group
+        = f.submit 'Построить графикъ', class: 'btn btn-default', name: 'update_plot'
